@@ -189,3 +189,10 @@ while not Game_over:
         print(f"{Player1_Name} wins!" if Player1_Choice == 'X' else f"{Player2_Name} wins!")
         Game_over = True
         break
+                    elif all(board[i][j] != ' ' for i in range(3) for j in range(3)):
+
+        print("It's a tie!")
+
+        Game_over = True
+
+        break
