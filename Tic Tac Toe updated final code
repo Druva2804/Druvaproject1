@@ -1,0 +1,108 @@
+from time import sleep
+from tqdm import tqdm
+
+def print_board(board):
+    print("   |   |   ")
+    print(f" {board[0][0]} | {board[0][1]} | {board[0][2]} ")
+    print("---|---|---")
+    print(f" {board[1][0]} | {board[1][1]} | {board[1][2]} ")
+    print("---|---|---")
+    print(f" {board[2][0]} | {board[2][1]} | {board[2][2]} ")
+
+def row_column():
+    print("Press any number to print your Choice")
+    print("    1 |  2  | 3 ")
+    print("______|_____|_____")
+    print("      |     |     ")
+    print("    4 |  5  | 6 ")
+    print("______|_____|_____")
+    print("      |     |     ")
+    print("    7 |  8  | 9 ")
+
+    print("Instructions")
+    print("There are 9 boxes each box has number (1-9)")
+    print("Must fill all the boxes")
+    print("Player 1 will go first")
+
+def row_column_choice(board, player_choice, box_number):
+    row = (box_number - 1) // 3
+    col = (box_number - 1) % 3
+
+    # Check if the box is already taken
+    if board[row][col] != ' ':
+        print("Box already taken! Choose another.")
+        return False
+
+    # Update the board with the player's choice at the specified box
+    board[row][col] = player_choice
+    return True
+
+def check_winner(board, player_choice):
+    # Check rows, columns, and diagonals
+    for i in range(3):
+        if all(board[i][j] == player_choice for j in range(3)) or \
+           all(board[j][i] == player_choice for j in range(3)):
+            return True
+
+    if all(board[i][i] == player_choice for i in range(3)) or \
+       all(board[i][2 - i] == player_choice for i in range(3)):
+        return True
+
+    return False
+
+def is_board_full(board):
+    return all(board[i][j] != ' ' for i in range(3) for j in range(3))
+
+print("Welcome to Tic-Tac-Toe!")
+Player1_Name = input("Enter Player 1 Name: ")
+Player1_Choice = input(f"{Player1_Name}, Please Select X (OR) O: ").upper()
+Player2_Name = input("Enter Player 2 Name: ")
+Player2_Choice = 'O' if Player1_Choice == 'X' else 'X'
+
+print(f"{Player1_Name}, You have Chosen {Player1_Choice}")
+print(f"{Player2_Name}, You have Chosen {Player2_Choice}")
+
+print("The game is about to start ..... ")
+print("3...2...1...")
+
+for _ in tqdm(range(10000)):
+    sleep(0.0005)
+
+row_column()
+
+# Initialize an empty 3x3 board
+board = [[' ' for _ in range(3)] for _ in range(3)]
+
+game_over = False
+current_player = Player1_Name
+current_choice = Player1_Choice
+
+while not game_over:
+    print_board(board)
+    print(f"Next is your turn {current_player}")
+    try:
+        box_number = int(input(f"Enter the box number (1-9) for {current_choice}: "))
+        if box_number < 1 or box_number > 9:
+            print("Invalid box number! Choose a number between 1 and 9.")
+            continue
+    except ValueError:
+        print("Invalid input! Please enter a number.")
+        continue
+
+    if row_column_choice(board, current_choice, box_number):
+        if check_winner(board, current_choice):
+            print_board(board)
+            print(f"{current_player} wins!")
+            game_over = True
+        elif is_board_full(board):
+            print_board(board)
+            print("It's a tie!")
+            game_over = True
+        else:
+            # Switch player
+            if current_player == Player1_Name:
+                current_player = Player2_Name
+                current_choice = Player2_Choice
+            else:
+                current_player = Player1_Name
+                current_choice = Player1_Choice
